@@ -1,0 +1,14 @@
+{{ $cur := . }}
+<aside class="docs-side" id="docs-sidebar" aria-label="Documentation">
+  <nav>
+  {{ range partial "docs-nav-pages.html" . }}
+    <div class="docs-side__group">
+      <span class="label">{{ .title }}</span>
+      {{ range .pages }}
+        {{ $active := or (eq . $cur) (and .IsSection (ne .Path "/docs") ($cur.IsDescendant .)) }}
+        <a href="{{ .RelPermalink }}"{{ if $active }} class="is-active" aria-current="page"{{ end }}>{{ .LinkTitle }}</a>
+      {{ end }}
+    </div>
+  {{ end }}
+  </nav>
+</aside>

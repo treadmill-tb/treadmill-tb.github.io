@@ -1,0 +1,4 @@
+<div class="callout">
+  {{ partial "icon.html" "info" }}
+  <div>{{ with .Get "title" }}<strong>{{ . }}</strong> {{ end }}{{ .Inner | .Page.RenderString (dict "display" "inline") }}</div>
+</div>

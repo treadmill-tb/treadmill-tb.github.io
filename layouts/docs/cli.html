@@ -1,0 +1,38 @@
+{{ define "body" }}
+{{ $cli := site.Data.upstream.cli }}
+<div class="prose">{{ .Content }}</div>
+{{ if not $cli }}
+<p class="callout">The CLI reference is generated from a built <code>tml</code> binary. Run <code>make data</code> with Cargo available to generate it.</p>
+{{ else }}
+<p class="cli-version">Generated from <code>{{ $cli.version }}</code>.</p>
+{{ range $cli.commands }}
+<section class="cmd cmd--d{{ .depth }}" id="{{ .anchor }}">
+  <h2 class="cmd__name"><code>{{ .name }}</code><a class="anchor" href="#{{ .anchor }}" aria-label="Link to {{ .name }}">#</a></h2>
+  {{ with .description }}<div class="cmd__desc">{{ . | $.RenderString (dict "display" "block") }}</div>{{ end }}
+  <pre class="cmd__usage"><code>{{ .usage }}</code></pre>
+  {{ with .subcommands }}
+  <div class="table-wrap"><table class="fields">
+    <thead><tr><th scope="col">Subcommand</th><th scope="col">Description</th></tr></thead>
+    <tbody>
+    {{ range $s := . }}{{ with index (where $cli.commands "name" $s) 0 }}<tr><td class="fields__name"><a href="#{{ .anchor }}"><code>{{ .name }}</code></a></td><td class="fields__desc">{{ .summary | markdownify }}</td></tr>{{ end }}{{ end }}
+    </tbody>
+  </table></div>
+  {{ end }}
+  {{ range .sections }}{{ if ne .title "Commands" }}
+  <h3>{{ .title }}</h3>
+  <dl class="opts">
+    {{ range .entries }}
+    <dt><code>{{ .term }}</code></dt>
+    <dd>{{ .help | $.RenderString (dict "display" "block") }}{{ with .values }}<span class="opts__meta">Values: {{ range $i, $v := . }}{{ if $i }}, {{ end }}<code>{{ $v }}</code>{{ end }}</span>{{ end }}{{ with .default }}<span class="opts__meta">Default: <code>{{ . }}</code></span>{{ end }}</dd>
+    {{ end }}
+  </dl>
+  {{ end }}{{ end }}
+</section>
+{{ end }}
+{{ end }}
+{{ end }}
+{{ define "toc" }}
+{{ $items := slice }}
+{{ range site.Data.upstream.cli.commands }}{{ if le .depth 1 }}{{ $items = $items | append (dict "id" .anchor "title" .name) }}{{ end }}{{ end }}
+{{ partial "toc-list.html" $items }}
+{{ end }}

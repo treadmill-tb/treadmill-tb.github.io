@@ -1,0 +1,20 @@
+{{ define "body" }}
+{{ $api := site.Data.upstream.api }}
+<div class="prose">
+{{ .Content }}
+<h2 id="authentication">Authentication</h2>
+<p>Endpoints that need a caller take a bearer token in the <code>Authorization</code> header. The spec defines these schemes:</p>
+<div class="table-wrap"><table class="fields">
+<thead><tr><th scope="col">Scheme</th><th scope="col">Description</th></tr></thead>
+<tbody>{{ range $api.security_schemes }}<tr><td class="fields__name"><code>{{ .name }}</code></td><td class="fields__desc">{{ .description | markdownify }}</td></tr>{{ end }}</tbody>
+</table></div>
+<h2 id="endpoints">Endpoints</h2>
+</div>
+<div class="cards">
+  {{ range $api.tags }}
+  <a class="card" href="{{ printf "/docs/reference/api/%s/" .slug | relURL }}"><strong>{{ .name }}</strong><span>{{ .description | markdownify }}</span><span class="card__meta">{{ len .operations }} endpoints</span></a>
+  {{ end }}
+  <a class="card" href="{{ "/docs/reference/api/schemas/" | relURL }}"><strong>Schemas</strong><span>Every request and response type the endpoints use.</span><span class="card__meta">{{ len $api.schemas }} types</span></a>
+</div>
+{{ end }}
+{{ define "toc" }}{{ partial "toc-list.html" (slice (dict "id" "authentication" "title" "Authentication") (dict "id" "endpoints" "title" "Endpoints")) }}{{ end }}

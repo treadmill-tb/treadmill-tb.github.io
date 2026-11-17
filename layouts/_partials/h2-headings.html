@@ -1,0 +1,9 @@
+{{- /* Level-2 headings of a page's content, as {id, title}, for the TOC. */ -}}
+{{- $items := slice -}}
+{{- range .Fragments.Headings -}}
+  {{- if eq .Level 2 }}{{ $items = $items | append (dict "id" .ID "title" (.Title | plainify | htmlUnescape)) }}{{ end -}}
+  {{- range .Headings -}}
+    {{- if eq .Level 2 }}{{ $items = $items | append (dict "id" .ID "title" (.Title | plainify | htmlUnescape)) }}{{ end -}}
+  {{- end -}}
+{{- end -}}
+{{- return $items -}}

@@ -1,0 +1,4 @@
+<div class="crumbs">
+  {{ range .Ancestors.Reverse }}{{ if ne .Kind "home" }}<a href="{{ .RelPermalink }}">{{ if eq .Path "/docs" }}Docs{{ else }}{{ .LinkTitle }}{{ end }}</a><span aria-hidden="true">/</span>{{ end }}{{ end }}
+  <span class="crumbs__cur">{{ .LinkTitle }}</span>
+</div>

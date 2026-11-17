@@ -1,0 +1,15 @@
+{{ $meta := site.Data.upstream.meta }}
+<footer class="site-footer">
+  <div class="wrap site-footer__inner">
+    <div class="site-footer__about">
+      <span class="brand__name">Treadmill</span>
+      <span>A distributed hardware testbed.<br>{{ with $meta }}{{ replace .license " OR " " or " }}, at your option.{{ else }}MIT or Apache-2.0, at your option.{{ end }}</span>
+      {{ with $meta }}{{ with .commit }}<span class="site-footer__build">Docs built from <a href="{{ site.Params.repo }}/commit/{{ . }}"><code>{{ $meta.commit_short }}</code></a></span>{{ end }}{{ end }}
+    </div>
+    <div class="site-footer__cols">
+      <div><span class="site-footer__h">Product</span><a href="{{ site.Params.consoleURL }}">Console</a><a href="{{ "/#features" | relURL }}">Features</a><a href="{{ "/docs/concepts/architecture/" | relURL }}">Architecture</a></div>
+      <div><span class="site-footer__h">Docs</span><a href="{{ "/docs/get-started/quickstart/" | relURL }}">Quickstart</a><a href="{{ "/docs/reference/cli/" | relURL }}">tml CLI</a><a href="{{ "/docs/reference/api/" | relURL }}">Switchboard API</a></div>
+      <div><span class="site-footer__h">Project</span><a href="{{ site.Params.repo }}">GitHub</a><a href="{{ site.Params.repo }}/issues">Issues</a></div>
+    </div>
+  </div>
+</footer>

@@ -1,0 +1,78 @@
+# Build the site from the latest Treadmill main and publish it to GitHub Pages.
+# Runs on pushes here, nightly (so generated docs follow upstream), on demand,
+# and on a `treadmill-updated` repository_dispatch from the upstream repo.
+name: Deploy site
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  schedule:
+    - cron: "17 4 * * *"
+  workflow_dispatch:
+    inputs:
+      treadmill_ref:
+        description: "Treadmill branch or tag to build docs from"
+        default: main
+  repository_dispatch:
+    types: [treadmill-updated]
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      TREADMILL_REF: ${{ github.event.inputs.treadmill_ref || github.event.client_payload.ref || 'main' }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Read Hugo version
+        run: echo "HUGO_VERSION=$(cat .hugo-version)" >> "$GITHUB_ENV"
+
+      - name: Install Hugo
+        run: |
+          curl -sSL -o hugo.deb "https://github.com/gohugoio/hugo/releases/download/v${HUGO_VERSION}/hugo_extended_${HUGO_VERSION}_linux-amd64.deb"
+          sudo dpkg -i hugo.deb
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install pyyaml
+
+      - name: Fetch Treadmill
+        run: scripts/fetch-upstream.sh
+
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: .treadmill -> target
+
+      - name: Configure Pages
+        id: pages
+        uses: actions/configure-pages@v5
+
+      - name: Build
+        run: make build HUGO="hugo --baseURL ${{ steps.pages.outputs.base_url }}/"
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: public
+
+  deploy:
+    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

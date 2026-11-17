@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="{{ site.Language.LanguageCode | default "en" }}">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{ .Title }} · {{ site.Title }} docs</title>
+<meta name="description" content="{{ .Description | default site.Params.description }}">
+<link rel="icon" href="{{ "favicon.svg" | relURL }}" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans+Condensed:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+{{ $css := resources.Get "css/main.css" | minify | fingerprint }}
+<link rel="stylesheet" href="{{ $css.RelPermalink }}" integrity="{{ $css.Data.Integrity }}">
+</head>
+<body class="page-docs">
+<a class="skip" href="#main">Skip to content</a>
+{{ partial "docs-header.html" . }}
+<div class="docs-layout">
+  {{ partial "docs-sidebar.html" . }}
+  <main id="main" class="docs-main"{{ if .Params.numbered }} data-numbered{{ end }}>
+    {{ partial "docs-breadcrumb.html" . }}
+    <h1 class="display doc-h">{{ .Title }}</h1>
+    {{ with .Description }}<p class="doc-lede">{{ . | markdownify }}</p>{{ end }}
+    {{ block "body" . }}{{ end }}
+    {{ partial "docs-prevnext.html" . }}
+  </main>
+  <aside class="docs-toc" aria-label="On this page">
+    {{ block "toc" . }}{{ end }}
+    <div class="docs-toc__links">
+      {{ with .Params.source }}<a href="{{ site.Params.repo }}/blob/{{ site.Params.upstreamBranch }}/{{ . }}">View source</a>
+      {{ else }}{{ with site.Params.siteRepo }}{{ with $.File }}<a href="{{ site.Params.siteRepo }}/edit/main/content/{{ .Path }}">Edit this page</a>{{ end }}{{ end }}{{ end }}
+      <a href="{{ site.Params.repo }}/issues">Report an issue</a>
+    </div>
+  </aside>
+</div>
+{{ $js := resources.Get "js/site.js" | js.Build (dict "minify" true) | fingerprint }}
+<script src="{{ $js.RelPermalink }}" integrity="{{ $js.Data.Integrity }}" defer></script>
+</body>
+</html>

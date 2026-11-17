@@ -1,0 +1,7 @@
+{{ $f := .f }}{{ $base := .base }}{{ $name := printf "%s%s" .prefix $f.name }}
+<tr>
+  <td class="fields__name"><code>{{ $name }}</code>{{ if $f.required }}<span class="req">required</span>{{ end }}</td>
+  <td class="fields__type">{{ partial "schema-type.html" (dict "type" $f.type "base" $base) }}{{ with $f.default }}<span class="default">default <code>{{ . }}</code></span>{{ end }}</td>
+  <td class="fields__desc">{{ $f.description | markdownify }}</td>
+</tr>
+{{ range $f.fields }}{{ partial "schema-field-row.html" (dict "f" . "base" $base "prefix" (printf "%s." $name)) }}{{ end }}

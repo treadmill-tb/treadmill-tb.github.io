@@ -1,0 +1,131 @@
+{{ define "bodyclass" }}page-home{{ end }}
+{{ define "main" }}
+{{ $l := site.Data.landing }}
+{{ $meta := site.Data.upstream.meta }}
+{{ partial "site-header.html" . }}
+<main id="main">
+
+<section class="wrap hero">
+  <div class="hero__copy">
+    <span class="pill"><span class="dot"></span>{{ $l.hero.badge }}</span>
+    <h1 class="display hero__title">{{ delimit $l.hero.title "<br>" | safeHTML }}</h1>
+    <p class="hero__lede">{{ $l.hero.lede }}</p>
+    <div class="btn-row">
+      <a class="btn btn--accent btn--lg" href="{{ site.Params.consoleURL }}">Start a job</a>
+      <a class="btn btn--outline btn--lg" href="{{ "/docs/get-started/quickstart/" | relURL }}">Read the quickstart</a>
+    </div>
+  </div>
+  <div class="hero__demo">
+    <div class="term term--window">
+      <div class="term__bar"><span></span><span></span><span></span><span class="term__title">~/firmware</span></div>
+<pre class="term__body"><span class="p">$</span> tml login
+<span class="o">  Logged in as ada</span>
+<span class="p">$</span> tml ssh setup
+<span class="p">$</span> tml job set-active ^3f9c2a7e
+<span class="p">$</span> tml job upload build/kernel.elf
+<span class="p">$</span> tml job exec -- make flash test
+<span class="o">  [nrf52840dk] flashing… ok</span>
+<span class="o">  test radio_rx ........ </span><span class="p">pass</span>
+<span class="o">  test radio_tx ........ </span><span class="p">pass</span>
+<span class="p">$</span> ssh tml@3f9c2a7e-….job.treadmill.dev<span class="caret" aria-hidden="true"></span></pre>
+    </div>
+    <div class="jobcard">
+      <div class="jobcard__text">
+        <span class="jobcard__name">{{ $l.hero.job_label }}</span>
+        <span class="jobcard__pred">{{ $l.hero.job_predicate }}</span>
+      </div>
+      <span class="status status--running"><span class="dot"></span>Running</span>
+    </div>
+  </div>
+</section>
+
+<section id="how" class="band band--dark">
+  <div class="wrap section">
+    <div class="section__head">
+      <span class="eyebrow">{{ $l.how.eyebrow }}</span>
+      <h2 class="display h-sec">{{ $l.how.title }}</h2>
+      <p class="lede">{{ $l.how.lede }}</p>
+    </div>
+    <ol class="flow" role="list">
+      {{ range $i, $s := $l.how.stages }}
+      {{ if $i }}<li class="flow__arrow" aria-hidden="true">{{ partial "icon.html" "arrow" }}</li>{{ end }}
+      <li class="flow__stage{{ if $s.highlight }} is-hl{{ end }}">
+        <span class="flow__step">{{ $s.step }}</span>
+        <span class="flow__name">{{ $s.name }}</span>
+        <span class="flow__text">{{ $s.text | markdownify }}</span>
+      </li>
+      {{ end }}
+    </ol>
+  </div>
+</section>
+
+<section id="features" class="wrap section section--lg">
+  <div class="split-head">
+    <h2 class="display h-sec">{{ $l.features.title }}</h2>
+    <p class="lede">{{ $l.features.lede }}</p>
+  </div>
+  <div class="feature-grid">
+    {{ range $l.features.items }}
+    <a class="feature" href="{{ .link | relURL }}">
+      {{ partial "icon.html" .icon }}
+      <h3>{{ .title }}</h3>
+      <p>{{ .text | markdownify }}</p>
+    </a>
+    {{ end }}
+  </div>
+</section>
+
+<section class="band band--white">
+  <div class="wrap section describe">
+    <div class="describe__copy">
+      <span class="eyebrow eyebrow--accent">{{ $l.describe.eyebrow }}</span>
+      <h2 class="display h-sec h-sec--sm">{{ $l.describe.title }}</h2>
+      <p class="lede">{{ $l.describe.text }}</p>
+      <a class="textlink" href="{{ $l.describe.link.href | relURL }}">{{ $l.describe.link.text }}</a>
+    </div>
+    <div class="term describe__code">
+<pre class="term__body"><span class="o">POST /api/v1/jobs</span>
+{
+  <span class="k">"label"</span>: "radio-regression",
+  <span class="k">"init_spec"</span>: { <span class="k">"type"</span>: "image_set", <span class="k">"set_id"</span>: "…" },
+  <span class="k">"host_cel_predicate"</span>:
+    <span class="p">"host.site == 'cambridge' &amp;&amp;
+     host.duts.exists(d, d.board == 'nrf52840dk')"</span>,
+  <span class="k">"lease_duration"</span>: "3600s",
+  <span class="k">"lease_expiry_action"</span>: "terminate",
+  <span class="k">"restart_policy"</span>: { <span class="k">"max_restarts"</span>: 0 },
+  <span class="k">"parameters"</span>: {}
+}</pre>
+    </div>
+  </div>
+</section>
+
+<section class="wrap section section--lg">
+  <h2 class="display h-sec h-sec--sm">{{ $l.steps.title }}</h2>
+  <ol class="steps" role="list">
+    {{ range $i, $s := $l.steps.items }}
+    <li class="steps__item">
+      <span class="steps__n">{{ printf "%02d" (add $i 1) }}</span>
+      <h3>{{ $s.title }}</h3>
+      <p>{{ $s.text | markdownify }}</p>
+    </li>
+    {{ end }}
+  </ol>
+</section>
+
+<section class="wrap cta-wrap">
+  <div class="cta">
+    <div class="cta__copy">
+      <h2 class="display h-sec h-sec--sm">{{ $l.cta.title }}</h2>
+      <p>{{ $l.cta.text }}</p>
+    </div>
+    <div class="btn-row">
+      <a class="btn btn--white btn--lg" href="{{ site.Params.repo }}">{{ partial "icon.html" "code" }}View on GitHub</a>
+      <a class="btn btn--ghost-white btn--lg" href="{{ site.Params.consoleURL }}">Open console</a>
+    </div>
+  </div>
+</section>
+
+</main>
+{{ partial "site-footer.html" . }}
+{{ end }}

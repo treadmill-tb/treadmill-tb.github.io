@@ -1,0 +1,11 @@
+{{- /* Returns the docs navigation as a list of groups: {title, pages}. The docs
+       root page (Introduction) leads the first group. */ -}}
+{{- $root := site.GetPage "/docs" -}}
+{{- $groups := slice -}}
+{{- range $i, $s := $root.Sections.ByWeight -}}
+  {{- $pages := slice -}}
+  {{- if eq $i 0 }}{{ $pages = $pages | append $root }}{{ end -}}
+  {{- range $s.Pages.ByWeight -}}{{ $pages = $pages | append . }}{{ end -}}
+  {{- $groups = $groups | append (dict "title" $s.Title "section" $s "pages" $pages) -}}
+{{- end -}}
+{{- return $groups -}}

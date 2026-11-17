@@ -1,0 +1,23 @@
+{{/* One page per OpenAPI tag, plus the schema page, from data/upstream/api.json. */}}
+{{ $api := .Site.Data.upstream.api }}
+{{ range $i, $t := $api.tags }}
+  {{ $.AddPage (dict
+    "path" $t.slug
+    "title" $t.name
+    "kind" "page"
+    "weight" (mul (add $i 1) 10)
+    "layout" "api-tag"
+    "params" (dict "tag" $t.slug "source" "switchboard/api-spec/openapi.yaml")
+    "summary" $t.description
+    "description" $t.description
+  ) }}
+{{ end }}
+{{ $.AddPage (dict
+  "path" "schemas"
+  "title" "Schemas"
+  "kind" "page"
+  "weight" 1000
+  "layout" "api-schemas"
+  "params" (dict "source" "switchboard/api-spec/openapi.yaml")
+  "description" "The request and response types used by the switchboard API."
+) }}

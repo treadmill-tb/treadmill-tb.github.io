@@ -1,0 +1,10 @@
+{{- /* An image from the upstream repository, mounted at assets/upstream/. */ -}}
+{{ $path := .Get "path" }}
+{{ with resources.Get (printf "upstream/%s" $path) }}
+<figure class="repo-figure">
+  <img src="{{ .RelPermalink }}" alt="{{ $.Get "alt" }}" loading="lazy">
+  <figcaption>From <a href="{{ site.Params.repo }}/blob/{{ site.Params.upstreamBranch }}/{{ $path }}"><code>{{ $path }}</code></a> in the Treadmill repository.</figcaption>
+</figure>
+{{ else }}
+{{ warnf "repo-image: %s not found; run make data" $path }}
+{{ end }}

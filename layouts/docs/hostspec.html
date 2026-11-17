@@ -1,0 +1,14 @@
+{{ define "body" }}
+{{ $hs := site.Data.upstream.hostspec }}
+<div class="prose">{{ .Content }}</div>
+{{ partial "schema-model.html" (dict "m" $hs.root "base" "" "level" 2 "page" $) }}
+<h2 id="types" class="sub-h">Types</h2>
+<div class="model-index">{{ range $name, $m := $hs.defs }}<a href="#{{ $name | anchorize }}"><code>{{ $name }}</code></a>{{ end }}</div>
+{{ range $name, $m := $hs.defs }}{{ partial "schema-model.html" (dict "m" $m "base" "" "level" 3 "page" $) }}{{ end }}
+{{ end }}
+{{ define "toc" }}
+{{ $hs := site.Data.upstream.hostspec }}
+{{ $items := slice (dict "id" ($hs.root.name | anchorize) "title" $hs.root.name) (dict "id" "types" "title" "Types") }}
+{{ range $name, $m := $hs.defs }}{{ $items = $items | append (dict "id" ($name | anchorize) "title" $name) }}{{ end }}
+{{ partial "toc-list.html" $items }}
+{{ end }}

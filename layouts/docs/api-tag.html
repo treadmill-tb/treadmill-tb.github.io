@@ -1,0 +1,40 @@
+{{ define "body" }}
+{{ $api := site.Data.upstream.api }}
+{{ $tag := index (where $api.tags "slug" .Params.tag) 0 }}
+{{ $base := "/docs/reference/api/schemas/" | relURL }}
+<div class="prose">{{ .Content }}</div>
+<div class="ops-index">
+  {{ range $tag.operations }}<a href="#{{ .id | anchorize }}"><span class="method method--{{ lower .method }}">{{ .method }}</span><code>{{ .path }}</code><span class="ops-index__sum">{{ .summary }}</span></a>{{ end }}
+</div>
+{{ range $tag.operations }}
+<section class="op" id="{{ .id | anchorize }}">
+  <h2 class="op__title">{{ .summary | default .id }}{{ if .deprecated }} <span class="tag tag--warn">deprecated</span>{{ end }}<a class="anchor" href="#{{ .id | anchorize }}" aria-label="Link to this operation">#</a></h2>
+  <div class="op__sig"><span class="method method--{{ lower .method }}">{{ .method }}</span><code>/api/v1{{ .path }}</code></div>
+  {{ with .description }}<div class="op__desc">{{ . | $.RenderString (dict "display" "block") }}</div>{{ end }}
+  {{ with .security }}<p class="op__auth">Authentication: {{ range $i, $s := . }}{{ if $i }} or {{ end }}<a href="{{ "/docs/reference/api/" | relURL }}#authentication">{{ replace $s "_" " " }}</a>{{ end }}</p>{{ end }}
+  {{ with .params }}
+  <h3>Parameters</h3>
+  <div class="table-wrap"><table class="fields">
+    <thead><tr><th scope="col">Name</th><th scope="col">In</th><th scope="col">Type</th><th scope="col">Description</th></tr></thead>
+    <tbody>{{ range . }}<tr><td class="fields__name"><code>{{ .name }}</code>{{ if .required }}<span class="req">required</span>{{ end }}</td><td>{{ .in }}</td><td class="fields__type">{{ partial "schema-type.html" (dict "type" .type "base" $base) }}</td><td class="fields__desc">{{ .description | markdownify }}</td></tr>{{ end }}</tbody>
+  </table></div>
+  {{ end }}
+  {{ with .body }}
+  <h3>Request body</h3>
+  <p class="op__body"><code>{{ .content_type }}</code> · {{ partial "schema-type.html" (dict "type" .type "base" $base) }}{{ if .required }} · required{{ end }}</p>
+  {{ with .description }}{{ . | markdownify }}{{ end }}
+  {{ end }}
+  <h3>Responses</h3>
+  <div class="table-wrap"><table class="fields responses">
+    <thead><tr><th scope="col">Status</th><th scope="col">Description</th><th scope="col">Body</th></tr></thead>
+    <tbody>{{ range .responses }}<tr><td><span class="code code--{{ substr .code 0 1 }}xx">{{ .code }}</span></td><td class="fields__desc">{{ .description | $.RenderString (dict "display" "block") }}</td><td class="fields__type">{{ with .type }}{{ partial "schema-type.html" (dict "type" . "base" $base) }}{{ else }}—{{ end }}</td></tr>{{ end }}</tbody>
+  </table></div>
+</section>
+{{ end }}
+{{ end }}
+{{ define "toc" }}
+{{ $tag := index (where site.Data.upstream.api.tags "slug" .Params.tag) 0 }}
+{{ $items := slice }}
+{{ range $tag.operations }}{{ $items = $items | append (dict "id" (.id | anchorize) "title" (.summary | default .id)) }}{{ end }}
+{{ partial "toc-list.html" $items }}
+{{ end }}

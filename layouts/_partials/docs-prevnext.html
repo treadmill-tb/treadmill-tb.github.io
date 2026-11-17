@@ -1,0 +1,11 @@
+{{ $cur := . }}
+{{ $flat := slice }}
+{{ range partial "docs-nav-pages.html" . }}{{ range .pages }}{{ $flat = $flat | append . }}{{ end }}{{ end }}
+{{ $idx := -1 }}
+{{ range $i, $p := $flat }}{{ if or (eq $p $cur) (and $p.IsSection (ne $p.Path "/docs") ($cur.IsDescendant $p)) }}{{ $idx = $i }}{{ end }}{{ end }}
+{{ if ge $idx 0 }}
+<nav class="prevnext" aria-label="Previous and next">
+  {{ if gt $idx 0 }}{{ with index $flat (sub $idx 1) }}<a href="{{ .RelPermalink }}"><span>Previous</span><strong>← {{ .LinkTitle }}</strong></a>{{ end }}{{ else }}<span></span>{{ end }}
+  {{ if lt (add $idx 1) (len $flat) }}{{ with index $flat (add $idx 1) }}<a class="next" href="{{ .RelPermalink }}"><span>Next</span><strong>{{ .LinkTitle }} →</strong></a>{{ end }}{{ end }}
+</nav>
+{{ end }}

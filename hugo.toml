@@ -1,0 +1,48 @@
+baseURL = "https://treadmill.dev/"
+languageCode = "en"
+title = "Treadmill"
+enableRobotsTXT = true
+disableKinds = ["taxonomy", "term", "rss"]
+
+[params]
+  description = "Treadmill is a distributed hardware testbed: a central switchboard schedules jobs onto real boards and virtual machines, boots them from reproducible images, and hands you a shell, a live console and your logs."
+  repo = "https://github.com/treadmill-tb/treadmill"
+  # The hosted web console. Override per deployment with HUGO_PARAMS_CONSOLEURL.
+  consoleURL = "https://console.treadmill.dev"
+  # Repository for this website; when set, hand-written docs get "Edit this page" links.
+  siteRepo = "https://github.com/treadmill-tb/treadmill-tb.github.io"
+  # Branch of the upstream repo that source links point at.
+  upstreamBranch = "main"
+
+[markup]
+  [markup.goldmark.renderer]
+    unsafe = false
+  [markup.goldmark.parser.attribute]
+    block = true
+  [markup.highlight]
+    noClasses = false
+    codeFences = true
+    guessSyntax = false
+  [markup.tableOfContents]
+    startLevel = 2
+    endLevel = 2
+    ordered = false
+
+[module]
+  # The upstream repo is mounted so pages can embed its files (diagrams) and
+  # the docs stay in sync with it. scripts/fetch-upstream.sh puts it here.
+  [[module.mounts]]
+    source = "assets"
+    target = "assets"
+  [[module.mounts]]
+    source = ".treadmill/doc/img"
+    target = "assets/upstream/doc/img"
+
+[outputs]
+  home = ["html", "searchindex"]
+
+[outputFormats.searchindex]
+  mediaType = "application/json"
+  baseName = "search-index"
+  isPlainText = true
+  notAlternative = true

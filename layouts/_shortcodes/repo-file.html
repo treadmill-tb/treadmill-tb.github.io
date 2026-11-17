@@ -1,0 +1,5 @@
+{{- /* Show a file from the upstream config set: {{< repo-file "cli/config.example.toml" >}} */ -}}
+{{ $p := .Get 0 }}
+{{ with index (where site.Data.upstream.config.files "path" $p) 0 }}
+{{ partial "codeblock.html" (dict "code" .content "lang" "toml" "label" (path.Base .path)) }}
+{{ end }}

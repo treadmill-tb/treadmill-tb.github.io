@@ -1,0 +1,10 @@
+{{- /* The component table from the upstream AGENTS.md. */ -}}
+{{ with site.Data.upstream.components }}
+<div class="table-wrap"><table class="fields">
+<thead><tr><th scope="col">Component</th><th scope="col">Where</th><th scope="col">Role</th></tr></thead>
+<tbody>
+{{ range . }}<tr><td><strong>{{ .name }}</strong></td><td class="fields__type">{{ range $i, $c := .crates }}{{ if $i }}, {{ end }}<a href="{{ site.Params.repo }}/tree/{{ site.Params.upstreamBranch }}/{{ strings.TrimSuffix "/" (strings.TrimSuffix "*" $c) }}"><code>{{ $c }}</code></a>{{ end }}</td><td class="fields__desc">{{ .role | markdownify }}</td></tr>{{ end }}
+</tbody>
+</table></div>
+<p class="table-src">From <a href="{{ site.Params.repo }}/blob/{{ site.Params.upstreamBranch }}/AGENTS.md"><code>AGENTS.md</code></a>.</p>
+{{ end }}

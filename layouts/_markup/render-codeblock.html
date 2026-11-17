@@ -1,0 +1,14 @@
+{{ $label := .Attributes.label | default .Type | default "text" }}
+{{ if eq $label "sh" "bash" "console" }}{{ $label = "shell" }}{{ end }}
+{{ $lang := .Type | default "text" }}
+{{ if eq $lang "cel" }}{{ $lang = "javascript" }}{{ end }}
+<div class="codeblock{{ if eq .Type "cel" }} codeblock--expr{{ end }}">
+  <div class="codeblock__bar"><span>{{ $label }}</span><button type="button" class="copy" data-copy>Copy</button></div>
+  {{ if eq .Type "shell" "sh" "bash" "console" }}
+  {{- $cont := false -}}
+  <pre class="chroma"><code>{{ range split (strings.TrimRight "\n" .Inner) "\n" }}{{ if hasPrefix . "#" }}<span class="c">{{ . }}</span>{{ else if or $cont (eq (trim . " ") "") }}{{ . }}{{ else }}<span class="prompt" aria-hidden="true">$ </span>{{ . }}{{ end }}{{ $cont = hasSuffix . "\\" }}
+{{ end }}</code></pre>
+  {{ else }}
+  {{ transform.Highlight .Inner $lang (.Options | default "") }}
+  {{ end }}
+</div>

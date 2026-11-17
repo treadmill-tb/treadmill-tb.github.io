@@ -1,0 +1,15 @@
+{{ define "body" }}
+<div class="prose">{{ .Content }}</div>
+{{ range site.Data.upstream.config.files }}
+<section class="cfg" id="{{ .slug }}">
+  <h2>{{ .title }}<a class="anchor" href="#{{ .slug }}" aria-label="Link to {{ .title }}">#</a></h2>
+  <p>{{ .description | markdownify }} From <a href="{{ site.Params.repo }}/blob/{{ site.Params.upstreamBranch }}/{{ .path }}"><code>{{ .path }}</code></a>.</p>
+  {{ partial "codeblock.html" (dict "code" .content "lang" "toml" "label" (path.Base .path)) }}
+</section>
+{{ end }}
+{{ end }}
+{{ define "toc" }}
+{{ $items := slice }}
+{{ range site.Data.upstream.config.files }}{{ $items = $items | append (dict "id" .slug "title" .title) }}{{ end }}
+{{ partial "toc-list.html" $items }}
+{{ end }}

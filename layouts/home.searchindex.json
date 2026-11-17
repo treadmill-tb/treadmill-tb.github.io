@@ -1,0 +1,23 @@
+{{- /* Search index for the docs search box: one entry per docs page, plus one
+       per API operation and CLI command so they can be found by name. */ -}}
+{{- $items := slice -}}
+{{- range where site.RegularPages "Section" "docs" -}}
+  {{- $items = $items | append (dict "t" .Title "u" .RelPermalink "s" (.Parent.Title) "d" (.Description | plainify) "b" (.Plain | truncate 3000 "")) -}}
+{{- end -}}
+{{- range (site.GetPage "/docs").Sections -}}
+  {{- $items = $items | append (dict "t" .Title "u" .RelPermalink "s" "Docs" "d" (.Description | plainify) "b" (.Plain | truncate 2000 "")) -}}
+  {{- range .Sections -}}{{ $items = $items | append (dict "t" .Title "u" .RelPermalink "s" .Parent.Title "d" (.Description | plainify) "b" (.Plain | truncate 2000 "")) }}{{ end -}}
+{{- end -}}
+{{- with site.Data.upstream.api -}}
+  {{- range .tags -}}{{ $slug := .slug }}{{ $name := .name -}}
+    {{- range .operations -}}
+      {{- $items = $items | append (dict "t" .summary "u" (printf "/docs/reference/api/%s/#%s" $slug (.id | anchorize) | relURL) "s" (printf "API · %s" $name) "d" (printf "%s %s" .method .path) "b" (.description | plainify | truncate 400 "")) -}}
+    {{- end -}}
+  {{- end -}}
+{{- end -}}
+{{- with site.Data.upstream.cli -}}
+  {{- range .commands -}}
+    {{- $items = $items | append (dict "t" .name "u" (printf "/docs/reference/cli/#%s" .anchor | relURL) "s" "CLI" "d" .summary "b" "") -}}
+  {{- end -}}
+{{- end -}}
+{{- $items | jsonify -}}

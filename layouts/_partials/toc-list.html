@@ -1,0 +1,7 @@
+{{- /* A table of contents from a list of {id, title}. */ -}}
+{{ if . }}
+<span class="label">On this page</span>
+<nav class="toc-list" data-toc>
+  {{ range . }}<a href="#{{ .id }}">{{ .title }}</a>{{ end }}
+</nav>
+{{ end }}

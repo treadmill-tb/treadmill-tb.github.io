@@ -1,0 +1,22 @@
+<header class="docs-header">
+  <div class="docs-header__inner">
+    <button class="docs-menu-btn" type="button" aria-controls="docs-sidebar" aria-expanded="false" aria-label="Open navigation">{{ partial "icon.html" "menu" }}</button>
+    <a class="brand" href="{{ "/" | relURL }}">{{ partial "logo.html" 26 }}<span class="brand__name brand__name--sm">Treadmill</span></a>
+    <a class="docs-badge" href="{{ "/docs/" | relURL }}">docs</a>
+    <div class="docs-search" data-search data-index="{{ "search-index.json" | relURL }}">
+      <label class="docs-search__box">
+        {{ partial "icon.html" "search" }}
+        <span class="sr-only">Search docs</span>
+        <input type="search" placeholder="Search docs" autocomplete="off" spellcheck="false" aria-controls="search-results" aria-autocomplete="list">
+        <kbd>/</kbd>
+      </label>
+      <ul class="docs-search__results" id="search-results" role="listbox" hidden></ul>
+    </div>
+    <nav class="docs-topnav" aria-label="Docs">
+      <a href="{{ "/docs/guides/" | relURL }}">Guides</a>
+      <a href="{{ "/docs/reference/api/" | relURL }}">API</a>
+      <a href="{{ site.Params.repo }}">GitHub</a>
+      <a class="btn btn--ink btn--sm" href="{{ site.Params.consoleURL }}">Console</a>
+    </nav>
+  </div>
+</header>

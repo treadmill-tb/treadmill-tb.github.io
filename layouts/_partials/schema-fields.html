@@ -1,0 +1,10 @@
+{{- /* Field table. Context: dict "fields" "base" */ -}}
+{{ $base := .base }}
+<div class="table-wrap">
+<table class="fields">
+  <thead><tr><th scope="col">Field</th><th scope="col">Type</th><th scope="col">Description</th></tr></thead>
+  <tbody>
+  {{ range .fields }}{{ partial "schema-field-row.html" (dict "f" . "base" $base "prefix" "") }}{{ end }}
+  </tbody>
+</table>
+</div>

@@ -1,0 +1,4 @@
+{{ define "body" }}<div class="prose">{{ .Content }}</div>{{ end }}
+{{ define "toc" }}
+{{ partial "toc-list.html" (partial "h2-headings.html" .) }}
+{{ end }}

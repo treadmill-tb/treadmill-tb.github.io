@@ -1,0 +1,6 @@
+{{ define "body" }}
+{{ $api := site.Data.upstream.api }}
+<div class="prose">{{ .Content }}</div>
+<div class="model-index">{{ range $name, $m := $api.schemas }}<a href="#{{ $name | anchorize }}"><code>{{ $name }}</code></a>{{ end }}</div>
+{{ range $name, $m := $api.schemas }}{{ partial "schema-model.html" (dict "m" $m "base" "" "level" 2 "page" $) }}{{ end }}
+{{ end }}

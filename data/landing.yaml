@@ -1,0 +1,58 @@
+# Copy for the landing page. Facts that come from the upstream repository
+# (versions, license, components) are in data/upstream/, generated at build time.
+
+hero:
+  badge: "Open source · Rust · MIT / Apache-2.0"
+  title: ["Real hardware,", "on demand."]
+  lede: >-
+    Treadmill is a distributed hardware testbed. A central switchboard schedules
+    your jobs onto real boards and virtual machines, boots them from reproducible
+    images, and hands you a shell, a live console and your logs.
+  job_label: radio-regression
+  job_predicate: "host.duts.exists(d, d.board == 'nrf52840dk')"
+
+how:
+  eyebrow: How it works
+  title: One switchboard. Hardware wherever it lives.
+  lede: >-
+    You describe what you need and what to boot. The switchboard finds a matching
+    host, a supervisor next to the hardware brings it up from your image, and the
+    job is yours until its lease runs out.
+  stages:
+    - { step: "01 · YOU", name: Clients, text: "The `tml` CLI and the web console. Sign in, enqueue jobs, connect." }
+    - { step: "02 · COORDINATOR", name: Switchboard, text: "Schedules jobs, matches host predicates, keeps the image catalog, grants and leases.", highlight: true }
+    - { step: "03 · CONTROL", name: Supervisors, text: "Run beside the hardware. QEMU for virtual hosts, NBD netboot for physical ones." }
+    - { step: "04 · HARDWARE", name: "Hosts & DUTs", text: "Machines and the devices under test wired to them: boards, debug probes, GPIO." }
+
+features:
+  title: Built for firmware that has to run on the real thing.
+  lede: "Treadmill treats a test bench like infrastructure: declarative, shareable, and reachable from anywhere."
+  items:
+    - { icon: image, title: Reproducible images, text: "Jobs boot from OCI disk images pinned by digest. Image sets let one job target several architectures.", link: /docs/concepts/images/ }
+    - { icon: search, title: Match hosts with CEL, text: "Ask for hardware by what it is: board, site, memory, connectivity. One predicate over each host's spec.", link: /docs/guides/host-predicates/ }
+    - { icon: terminal, title: SSH straight in, text: "After `tml ssh setup`, every job is a hostname. Exec, SFTP, upload and download work too.", link: /docs/guides/ssh/ }
+    - { icon: logs, title: "Live logs & console", text: "Stream the serial console to your browser as it boots, and type into it when you need to.", link: /docs/guides/logs/ }
+    - { icon: services, title: Job services, text: "A job announces the services it runs; Treadmill proxies them through its gateways with short-lived tokens.", link: /docs/guides/job-services/ }
+    - { icon: clock, title: "Leases & sharing", text: "Jobs hold hardware for a lease, with restart policies. Grant access to hosts and images per user or group.", link: /docs/concepts/jobs/ }
+
+describe:
+  eyebrow: Describe the job
+  title: An image, a predicate, a lease.
+  text: >-
+    That is a job. Enqueue it from the console or straight against the switchboard
+    API. Treadmill can tell you up front whether anything matches, so a job never
+    sits queued for hardware that does not exist.
+  link: { text: "Jobs & leases in the docs →", href: /docs/concepts/jobs/ }
+
+steps:
+  title: Three steps to a board on your desk.
+  items:
+    - { title: Sign in, text: "Install `tml` and run `tml login`, or open the console in your browser." }
+    - { title: Start a job, text: "Pick an image and say which hosts qualify. Watch it get placed and boot." }
+    - { title: Connect, text: "SSH in, run your tests, read the console. Report the exit status from inside the job." }
+
+cta:
+  title: Open source, all the way down.
+  text: >-
+    Switchboard, supervisors, CLI and console are written in Rust and TypeScript
+    and built with Nix. Run your own, or bring hosts to ours.

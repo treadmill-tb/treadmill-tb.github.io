@@ -1,0 +1,4 @@
+{{- /* Render a generated type (list of {t} | {ref} parts). Context: dict "type" "base" */ -}}
+{{- $base := .base -}}
+<code class="ty">{{ range .type }}{{ with .ref }}<a href="{{ $base }}#{{ . | anchorize }}">{{ . }}</a>{{ else }}{{ .t }}{{ end }}{{ end }}</code>
+{{- /**/ -}}

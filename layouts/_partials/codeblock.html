@@ -1,0 +1,5 @@
+{{- /* Dark code block with a label and a copy button. Context: dict "code" "lang" "label" */ -}}
+<div class="codeblock">
+  <div class="codeblock__bar"><span>{{ .label | default .lang | default "text" }}</span><button type="button" class="copy" data-copy>Copy</button></div>
+  {{ transform.Highlight (strings.TrimRight "\n" .code) (.lang | default "text") "" }}
+</div>

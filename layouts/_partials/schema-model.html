@@ -1,0 +1,26 @@
+{{- /* One schema model. Context: dict "m" "base" "level" */ -}}
+{{ $m := .m }}{{ $base := .base }}
+<section class="model" id="{{ $m.name | anchorize }}">
+  <h{{ .level | default 3 }} class="model__name"><code>{{ $m.name }}</code><a class="anchor" href="#{{ $m.name | anchorize }}" aria-label="Link to {{ $m.name }}">#</a></h{{ .level | default 3 }}>
+  {{ with $m.description }}<div class="model__desc">{{ . | $.page.RenderString (dict "display" "block") }}</div>{{ end }}
+  {{ if eq $m.kind "object" }}
+    {{ partial "schema-fields.html" (dict "fields" $m.fields "base" $base) }}
+    {{ with $m.additional }}<p class="model__note">Additional keys: {{ partial "schema-type.html" (dict "type" . "base" $base) }}</p>{{ end }}
+  {{ else if eq $m.kind "union" }}
+    <p class="model__note">One of:</p>
+    <div class="variants">
+    {{ range $m.variants }}
+      <div class="variant">
+        {{ with .tag }}<div class="variant__tag"><code>{{ . }}</code></div>{{ end }}
+        {{ with .type }}<div class="variant__tag">{{ partial "schema-type.html" (dict "type" . "base" $base) }}</div>{{ end }}
+        {{ with .description }}<div class="variant__desc">{{ . | $.page.RenderString (dict "display" "block") }}</div>{{ end }}
+        {{ with .fields }}{{ partial "schema-fields.html" (dict "fields" . "base" $base) }}{{ end }}
+      </div>
+    {{ end }}
+    </div>
+  {{ else if eq $m.kind "enum" }}
+    <p class="model__note">One of: {{ range $i, $v := $m.values }}{{ if $i }}, {{ end }}<code>{{ $v }}</code>{{ end }}</p>
+  {{ else }}
+    <p class="model__note">Type: {{ partial "schema-type.html" (dict "type" $m.type "base" $base) }}</p>
+  {{ end }}
+</section>

@@ -1,0 +1,7 @@
+# Generated
+/public/
+/resources/_gen/
+/.hugo_build.lock
+/data/upstream/
+# Upstream checkout (scripts/fetch-upstream.sh)
+/.treadmill/
